@@ -1,0 +1,60 @@
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+
+public class RelatorioTemperatura extends JFrame {
+
+    private JTable tabela;
+    private DefaultTableModel modeloTabela;
+    private double[] temperaturasSemana = {20.5, 22.0, 25.3, 19.6, 23.8, 24.1, 21.7};
+
+    public RelatorioTemperatura() {
+        setTitle("Relatório Semanal de Temperatura");
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+
+        // Gráfico
+        ChartPanel chartPanel = new ChartPanel(criarGrafico());
+        chartPanel.setPreferredSize(new Dimension(600, 400));
+        add(chartPanel, BorderLayout.NORTH);
+
+        // Tabela
+        modeloTabela = new DefaultTableModel(new String[]{"Dia", "Temperatura (°C)"}, 0);
+        tabela = new JTable(modeloTabela);
+        JScrollPane scroll = new JScrollPane(tabela);
+        add(scroll, BorderLayout.CENTER);
+
+        preencherTabela();
+    }
+
+    private JFreeChart criarGrafico() {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        String[] dias = {"Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"};
+
+        for (int i = 0; i < temperaturasSemana.length; i++) {
+            dataset.addValue(temperaturasSemana[i], "Temperatura", dias[i]);
+        }
+
+        return ChartFactory.createLineChart(
+                "Temperatura Semanal",
+                "Dia da Semana",
+                "Temperatura (°C)",
+                dataset,
+                PlotOrientation.VERTICAL,
+                true, true, false
+        );
+    }
+
+    private void preencherTabela() {
+        String[] dias = {"Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"};
+
+        for (int i = 0; i < temperaturasSemana.length; i++) {
+            modeloTabela.addRow(new Object[]{dias[i], temperaturasSemana[i]});
